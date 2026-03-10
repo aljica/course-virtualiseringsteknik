@@ -27,6 +27,11 @@
     mode: '0600'
     owner: "{{ flask_user }}"
 
+- name: Kill existing Flask process if running
+  shell: pkill -f "python3.*app.py" || true
+  args:
+    executable: /bin/bash
+
 - name: Start Flask app
   shell: |
     set -a
