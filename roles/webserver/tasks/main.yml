@@ -15,10 +15,23 @@
 - name: Copy Flask app
   copy:
     src: app.py
-    dest: /home/vagrant/app.py
-    owner: vagrant
+    dest: "{{ flask_app_dest }}"
+    owner: "{{ flask_user }}"
+
+- name: Create Flask environment file
+  copy:
+    dest: "{{ flask_env_file }}"
+    content: |
+      DB_USER={{ db_user }}
+      DB_PASSWORD={{ db_password }}
+    mode: '0600'
+    owner: "{{ flask_user }}"
 
 - name: Start Flask app
-  shell: nohup python3 /home/vagrant/app.py > /home/vagrant/flask.log 2>&1 &
+  shell: |
+    set -a
+    source {{ flask_env_file }}
+    set +a
+    nohup python3 {{ flask_app_dest }} > {{ flask_log }} 2>&1 &
   args:
     executable: /bin/bash

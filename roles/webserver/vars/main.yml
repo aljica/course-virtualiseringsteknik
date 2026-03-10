@@ -1,0 +1,5 @@
+flask_app_dest: /home/vagrant/app.py
+flask_env_file: /etc/flask.env
+flask_port: 5000
+flask_user: vagrant
+flask_log: /home/vagrant/flask.log

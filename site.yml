@@ -12,5 +12,8 @@
 - name: Configure webserver
   hosts: webserver
   become: yes
+  vars_files:
+    - /vagrant/secrets.yml
+    - vars/main.yml
   roles:
     - webserver
