@@ -1,4 +1,14 @@
 ---
+- name: Update ansible repo
+  hosts: control
+  become: no
+  tasks:
+    - name: Pull latest changes from GitHub
+      git:
+        repo: https://github.com/yourusername/course-virtualiseringsteknik.git
+        dest: /home/vagrant/ansible
+        update: yes
+
 - name: Configure webserver
   hosts: webserver
   become: yes
