@@ -5,7 +5,7 @@
   tasks:
     - name: Pull latest changes from GitHub
       git:
-        repo: https://github.com/yourusername/course-virtualiseringsteknik.git
+        repo: https://github.com/aljica/course-virtualiseringsteknik.git
         dest: /home/vagrant/ansible
         update: yes
 
