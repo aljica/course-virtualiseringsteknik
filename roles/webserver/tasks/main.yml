@@ -1,0 +1,24 @@
+---
+- name: Install Python3 and pip
+  apt:
+    name:
+      - python3
+      - python3-pip
+    state: present
+    update_cache: yes
+
+- name: Install Flask
+  pip:
+    name: flask
+    executable: pip3
+
+- name: Copy Flask app
+  copy:
+    src: app.py
+    dest: /home/vagrant/app.py
+    owner: vagrant
+
+- name: Start Flask app
+  shell: nohup python3 /home/vagrant/app.py > /home/vagrant/flask.log 2>&1 &
+  args:
+    executable: /bin/bash
