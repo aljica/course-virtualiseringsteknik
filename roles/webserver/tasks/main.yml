@@ -27,16 +27,30 @@
     mode: '0600'
     owner: "{{ flask_user }}"
 
-- name: Kill existing Flask process if running
-  shell: kill $(cat /tmp/flask.pid) 2>/dev/null || true
-  args:
-    executable: /bin/bash
+- name: Create Flask systemd service
+  copy:
+    dest: /etc/systemd/system/flask.service
+    content: |
+      [Unit]
+      Description=Flask Web Application
+      After=network.target
 
-- name: Start Flask app
-  shell: |
-    set -a
-    source {{ flask_env_file }}
-    set +a
-    nohup python3 {{ flask_app_dest }} > {{ flask_log }} 2>&1 &
-  args:
-    executable: /bin/bash
+      [Service]
+      User={{ flask_user }}
+      EnvironmentFile={{ flask_env_file }}
+      ExecStart=/usr/bin/python3 {{ flask_app_dest }}
+      Restart=always
+      RestartSec=3
+
+      [Install]
+      WantedBy=multi-user.target
+
+- name: Reload systemd daemon
+  systemd:
+    daemon_reload: yes
+
+- name: Enable and restart Flask service
+  systemd:
+    name: flask
+    state: restarted
+    enabled: yes
