@@ -28,7 +28,7 @@
     owner: "{{ flask_user }}"
 
 - name: Kill existing Flask process if running
-  shell: pkill -f "python3.*app.py" || true
+  shell: kill $(cat /tmp/flask.pid) 2>/dev/null || true
   args:
     executable: /bin/bash
 
