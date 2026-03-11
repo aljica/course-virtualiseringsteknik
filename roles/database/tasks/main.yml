@@ -65,3 +65,10 @@
     line: "host    {{ db_name }}    {{ db_user }}    {{ webserver_ip }}/32    md5"
     state: present
   notify: restart postgresql
+
+- name: Allow webserver2 to connect to PostgreSQL
+  lineinfile:
+    path: /etc/postgresql/14/main/pg_hba.conf
+    line: "host    {{ db_name }}    {{ db_user }}    {{ webserver2_ip }}/32    md5"
+    state: present
+  notify: restart postgresql
