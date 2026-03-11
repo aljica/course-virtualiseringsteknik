@@ -36,3 +36,14 @@
     privs: ALL
     type: database
     state: present
+
+- name: Copy schema file
+  template:
+    src: schema.sql.j2
+    dest: /tmp/schema.sql
+
+- name: Create visits table
+  become_user: postgres
+  postgresql_query:
+    db: "{{ db_name }}"
+    query: "{{ lookup('file', '/tmp/schema.sql') }}"
