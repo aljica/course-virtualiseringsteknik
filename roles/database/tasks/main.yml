@@ -15,13 +15,24 @@
     enabled: yes
 
 - name: Create database user
-  shell: |
-    sudo -u postgres psql -c "CREATE USER {{ db_user }} WITH PASSWORD '{{ db_password }}';" 2>/dev/null || true
-  args:
-    executable: /bin/bash
+  become_user: postgres
+  postgresql_user:
+    name: "{{ db_user }}"
+    password: "{{ db_password }}"
+    state: present
 
 - name: Create database
-  shell: |
-    sudo -u postgres psql -c "CREATE DATABASE {{ db_name }} OWNER {{ db_user }};" 2>/dev/null || true
-  args:
-    executable: /bin/bash
+  become_user: postgres
+  postgresql_db:
+    name: "{{ db_name }}"
+    owner: "{{ db_user }}"
+    state: present
+
+- name: Grant privileges
+  become_user: postgres
+  postgresql_privs:
+    database: "{{ db_name }}"
+    role: "{{ db_user }}"
+    privs: ALL
+    type: database
+    state: present
