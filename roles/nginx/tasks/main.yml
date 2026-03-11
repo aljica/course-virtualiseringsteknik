@@ -1,2 +1,31 @@
 ---
-# Nginx role - coming soon
+- name: Install nginx
+  apt:
+    name: nginx
+    state: present
+    update_cache: yes
+
+- name: Configure nginx as load balancer
+  template:
+    src: nginx.conf.j2
+    dest: /etc/nginx/sites-available/loadbalancer
+  notify: restart nginx
+
+- name: Enable load balancer config
+  file:
+    src: /etc/nginx/sites-available/loadbalancer
+    dest: /etc/nginx/sites-enabled/loadbalancer
+    state: link
+  notify: restart nginx
+
+- name: Remove default nginx site
+  file:
+    path: /etc/nginx/sites-enabled/default
+    state: absent
+  notify: restart nginx
+
+- name: Ensure nginx is started and enabled
+  systemd:
+    name: nginx
+    state: started
+    enabled: yes

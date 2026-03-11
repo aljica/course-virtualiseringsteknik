@@ -1,0 +1,12 @@
+upstream flask_servers {
+    server {{ webserver_ip }}:5000;
+    server {{ webserver2_ip }}:5000;
+}
+
+server {
+    listen 80;
+
+    location / {
+        proxy_pass http://flask_servers;
+    }
+}
