@@ -21,7 +21,10 @@ def index():
 def secret():
     db_user = os.getenv("DB_USER", "not set")
     db_password = os.getenv("DB_PASSWORD", "not set")
-    return f"DB_USER: {db_user}, DB_PASSWORD: {db_password}"
+    db_name = os.getenv("DB_NAME", "not set")
+    db_host = os.getenv("DB_HOST", "not set")
+    db_port = os.getenv("DB_PORT", "not set")
+    return f"DB_USER: {db_user}, DB_PASSWORD: {db_password}, DB_NAME: {db_name}, DB_HOST: {db_host}, DB_PORT: {db_port}"
 
 @app.route("/visit")
 def visit():
