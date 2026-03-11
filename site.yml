@@ -4,6 +4,7 @@
   become: yes
   vars_files:
     - /vagrant/secrets.yml
+    - vars/vars.yml
   roles:
     - webserver
 
@@ -12,5 +13,6 @@
   become: yes
   vars_files:
     - /vagrant/secrets.yml
+    - vars/vars.yml
   roles:
     - database
