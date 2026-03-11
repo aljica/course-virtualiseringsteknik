@@ -33,8 +33,3 @@
     - vars/vars.yml
   roles:
     - nginx
-
-- name: Make verify script executable
-  file:
-    path: /home/vagrant/ansible/verify.sh
-    mode: '0755'
