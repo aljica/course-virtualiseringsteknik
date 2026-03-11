@@ -43,15 +43,13 @@
     db: "{{ db_name }}"
     query: "{{ lookup('template', role_path + '/templates/schema.sql.j2') }}"
 
-- name: Grant privileges on visits table to appuser
+- name: Grant all privileges to appuser
   become_user: postgres
-  postgresql_privs:
-    database: "{{ db_name }}"
-    role: "{{ db_user }}"
-    privs: ALL
-    type: table
-    objs: visits
-    state: present
+  postgresql_query:
+    db: "{{ db_name }}"
+    query: |
+      GRANT ALL ON ALL TABLES IN SCHEMA public TO {{ db_user }};
+      GRANT ALL ON ALL SEQUENCES IN SCHEMA public TO {{ db_user }};
 
 - name: Configure PostgreSQL to listen on all interfaces
   lineinfile:
