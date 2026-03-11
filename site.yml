@@ -10,5 +10,7 @@
 - name: Configure database
   hosts: database
   become: yes
+  vars_files:
+    - /vagrant/secrets.yml
   roles:
     - database
