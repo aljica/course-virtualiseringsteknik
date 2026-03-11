@@ -14,14 +14,6 @@
     state: started
     enabled: yes
 
-- name: Create Ansible tmp directory for postgres user
-  file:
-    path: /var/lib/postgresql/.ansible/tmp
-    state: directory
-    owner: postgres
-    group: postgres
-    mode: '0700'
-
 - name: Create database user
   become_user: postgres
   postgresql_user:
