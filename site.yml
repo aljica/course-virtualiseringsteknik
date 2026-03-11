@@ -6,3 +6,9 @@
     - /vagrant/secrets.yml
   roles:
     - webserver
+
+- name: Configure database
+  hosts: database
+  become: yes
+  roles:
+    - database
