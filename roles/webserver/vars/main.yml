@@ -3,3 +3,4 @@ flask_env_file: /etc/flask.env
 flask_port: 5000
 flask_user: vagrant
 flask_log: /home/vagrant/flask.log
+server_name: "Server 1"

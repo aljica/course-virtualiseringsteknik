@@ -30,7 +30,7 @@ def secret():
 def visit():
     conn = get_db_connection()
     cur = conn.cursor()
-    cur.execute("INSERT INTO visits (served_by) VALUES (%s)", ("Server 2",))
+    cur.execute("INSERT INTO visits (served_by) VALUES (%s)", (os.getenv("SERVER_NAME"),))
     conn.commit()
     cur.execute("SELECT id, timestamp, served_by FROM visits ORDER BY timestamp DESC LIMIT 5")
     rows = cur.fetchall()

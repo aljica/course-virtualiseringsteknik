@@ -29,6 +29,7 @@
       DB_NAME={{ db_name }}
       DB_HOST={{ db_host }}
       DB_PORT={{ db_port }}
+      SERVER_NAME={{ server_name }}
     mode: '0600'
     owner: "{{ flask_user }}"
 
