@@ -7,9 +7,11 @@
     state: present
     update_cache: yes
 
-- name: Install Flask
+- name: Install Flask and psycopg2
   pip:
-    name: flask
+    name:
+      - flask
+      - psycopg2-binary
     executable: pip3
 
 - name: Copy Flask app
