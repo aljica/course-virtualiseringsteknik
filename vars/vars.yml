@@ -1,3 +1,5 @@
 db_host: 192.168.56.12
 db_port: 5432
 webserver_ip: 192.168.56.11
+webserver2_ip: 192.168.56.13
+nginx_ip: 192.168.56.14

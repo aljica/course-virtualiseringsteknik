@@ -8,6 +8,15 @@
   roles:
     - webserver
 
+- name: Configure webserver2
+  hosts: webserver2
+  become: yes
+  vars_files:
+    - /vagrant/secrets.yml
+    - vars/vars.yml
+  roles:
+    - webserver2
+
 - name: Configure database
   hosts: database
   become: yes
@@ -16,3 +25,11 @@
     - vars/vars.yml
   roles:
     - database
+
+- name: Configure nginx
+  hosts: nginx
+  become: yes
+  vars_files:
+    - vars/vars.yml
+  roles:
+    - nginx
