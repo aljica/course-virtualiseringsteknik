@@ -1,3 +1,10 @@
 .vault_pass
 vars/secrets.yml
 secrets.yml
+
+.vagrant/
+Vagrantfile.local
+*.box
+
+.DS_Store
+Thumbs.db
