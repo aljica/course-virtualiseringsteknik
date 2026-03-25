@@ -2,9 +2,8 @@
 vars/secrets.yml
 secrets.yml
 
-.vagrant/
-Vagrantfile.local
-*.box
+vagrant/*
+!vagrant/Vagrantfile
 
-.DS_Store
-Thumbs.db
+.vscode/
+.*swp
