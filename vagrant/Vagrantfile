@@ -1,0 +1,120 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+# --- Configuration ---
+ANSIBLE_REPO = "https://github.com/aljica/course-virtualiseringsteknik.git"
+CONTROL_IP = "192.168.56.10"
+WEBSERVER_IP = "192.168.56.11"
+DATABASE_IP = "192.168.56.12"
+WEBSERVER2_IP = "192.168.56.13"
+NGINX_IP = "192.168.56.14"
+
+Vagrant.configure("2") do |config|
+
+  config.vm.box = "ubuntu/jammy64"
+
+  # --- VM 1: Ansible Control Node (provisioned first) ---
+  config.vm.define "control" do |ctrl|
+    ctrl.vm.hostname = "control"
+    ctrl.vm.network "private_network", ip: CONTROL_IP
+
+    ctrl.vm.provider "virtualbox" do |vb|
+      vb.name   = "course-control"
+      vb.memory = 512
+      vb.cpus   = 1
+    end
+
+    ctrl.vm.provision "shell", inline: <<-SHELL
+      apt-get update -y
+      apt-get install -y ansible git
+
+      # Generate SSH key for vagrant user
+      sudo -u vagrant ssh-keygen -t rsa -b 2048 -f /home/vagrant/.ssh/id_rsa -N "" 2>/dev/null || true
+
+      # Share public key via synced folder
+      cp /home/vagrant/.ssh/id_rsa.pub /vagrant/control_key.pub
+
+      # Bootstrap cloning the project & fetching Ansible files initially
+      sudo -u vagrant git clone #{ANSIBLE_REPO} /home/vagrant/ansible
+
+      echo "=== Ansible installed, SSH key generated, git repo cloned ==="
+    SHELL
+
+  end
+
+  # --- VM 2: Web Server (provisioned second, picks up control key) ---
+  config.vm.define "webserver" do |web|
+    web.vm.hostname = "webserver"
+    web.vm.network "private_network", ip: WEBSERVER_IP
+    web.vm.network "forwarded_port", guest: 5000, host: 5000
+
+    web.vm.provider "virtualbox" do |vb|
+      vb.name   = "course-webserver"
+      vb.memory = 512
+      vb.cpus   = 1
+    end
+
+    web.vm.provision "shell", inline: <<-SHELL
+      # Add control node's public key to authorized_keys
+      cat /vagrant/control_key.pub >> /home/vagrant/.ssh/authorized_keys
+      chmod 600 /home/vagrant/.ssh/authorized_keys
+      echo "=== Control node key added to webserver ==="
+    SHELL
+  end
+
+    # --- VM 3: Database ---
+  config.vm.define "database" do |db|
+    db.vm.hostname = "database"
+    db.vm.network "private_network", ip: DATABASE_IP
+
+    db.vm.provider "virtualbox" do |vb|
+      vb.name   = "course-database"
+      vb.memory = 512
+      vb.cpus   = 1
+    end
+
+    db.vm.provision "shell", inline: <<-SHELL
+      cat /vagrant/control_key.pub >> /home/vagrant/.ssh/authorized_keys
+      chmod 600 /home/vagrant/.ssh/authorized_keys
+      echo "=== Control node key added to database ==="
+    SHELL
+  end
+
+    # --- VM 4: Web Server 2 ---
+  config.vm.define "webserver2" do |web2|
+    web2.vm.hostname = "webserver2"
+    web2.vm.network "private_network", ip: WEBSERVER2_IP
+
+    web2.vm.provider "virtualbox" do |vb|
+      vb.name   = "course-webserver2"
+      vb.memory = 512
+      vb.cpus   = 1
+    end
+
+    web2.vm.provision "shell", inline: <<-SHELL
+      cat /vagrant/control_key.pub >> /home/vagrant/.ssh/authorized_keys
+      chmod 600 /home/vagrant/.ssh/authorized_keys
+      echo "=== Control node key added to webserver2 ==="
+    SHELL
+  end
+
+  # --- VM 5: Nginx Load Balancer ---
+  config.vm.define "nginx" do |ng|
+    ng.vm.hostname = "nginx"
+    ng.vm.network "private_network", ip: NGINX_IP
+    ng.vm.network "forwarded_port", guest: 80, host: 8080
+
+    ng.vm.provider "virtualbox" do |vb|
+      vb.name   = "course-nginx"
+      vb.memory = 512
+      vb.cpus   = 1
+    end
+
+    ng.vm.provision "shell", inline: <<-SHELL
+      cat /vagrant/control_key.pub >> /home/vagrant/.ssh/authorized_keys
+      chmod 600 /home/vagrant/.ssh/authorized_keys
+      echo "=== Control node key added to nginx ==="
+    SHELL
+  end
+
+end
